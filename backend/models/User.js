@@ -1,57 +1,102 @@
-const mongoose = require('mongoose');
+const store = require('./store');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema(
-  {
-    username: {
-      type: String,
-      required: [true, 'Username is required'],
-      unique: true,
-      trim: true,
-      minlength: [3, 'Username must be at least 3 characters long'],
-    },
-    email: {
-      type: String,
-      required: [true, 'Email is required'],
-      unique: true,
-      trim: true,
-      lowercase: true,
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please enter a valid email address',
-      ],
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters long'],
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-// Hash the password before saving if it has been modified
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
+class UserQuery {
+  constructor(user) {
+    this.user = user;
   }
 
-  try {
+  /**
+   * Mock field selector (e.g. removing password field)
+   */
+  select(fields) {
+    if (this.user) {
+      // Create a shallow copy to prevent modifying the database store reference
+      this.user = { ...this.user };
+      if (fields.includes('-password')) {
+        delete this.user.password;
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Thenable interface to allow direct awaiting
+   */
+  then(resolve, reject) {
+    resolve(this.user);
+  }
+}
+
+class User {
+  /**
+   * Mock search for single user
+   */
+  static findOne(query) {
+    if (!query) return new UserQuery(null);
+
+    let user = null;
+
+    if (query.email) {
+      const emailVal = query.email.toLowerCase();
+      user = store.users.find((u) => u.email === emailVal);
+    } else if (query.username) {
+      user = store.users.find((u) => u.username === query.username);
+    } else if (query.$or) {
+      const emailQuery = query.$or.find((q) => q.email);
+      const usernameQuery = query.$or.find((q) => q.username);
+
+      const emailVal = emailQuery ? (typeof emailQuery.email === 'string' ? emailQuery.email.toLowerCase() : emailQuery.email) : null;
+      const usernameVal = usernameQuery ? usernameQuery.username : null;
+
+      user = store.users.find(
+        (u) => (emailVal && u.email === emailVal) || (usernameVal && u.username === usernameVal)
+      );
+    }
+
+    return new UserQuery(user ? this.wrap(user) : null);
+  }
+
+  /**
+   * Mock search by ID
+   */
+  static findById(id) {
+    if (!id) return new UserQuery(null);
+    const user = store.users.find((u) => u._id === id.toString());
+    return new UserQuery(user ? this.wrap(user) : null);
+  }
+
+  /**
+   * Mock user registration creation
+   */
+  static async create(data) {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+    const hashedPassword = await bcrypt.hash(data.password, salt);
+    
+    const newUser = {
+      _id: Math.random().toString(36).substring(2, 9),
+      username: data.username,
+      email: data.email.toLowerCase(),
+      password: hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    store.users.push(newUser);
+    return this.wrap(newUser);
   }
-});
 
-// Instance method to compare password for login validation
-userSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-const User = mongoose.model('User', userSchema);
+  /**
+   * Wrap raw Javascript user object with mongoose-compatible helper methods
+   */
+  static wrap(user) {
+    return {
+      ...user,
+      comparePassword: async function (enteredPassword) {
+        return await bcrypt.compare(enteredPassword, this.password);
+      },
+    };
+  }
+}
 
 module.exports = User;
