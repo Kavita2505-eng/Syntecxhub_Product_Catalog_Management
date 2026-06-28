@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+/* Custom styles for tables */
+.table-container {
+  @apply overflow-x-auto border border-slate-200 rounded-lg bg-white shadow-subtle;
+}
+
+.custom-table {
+  @apply min-w-full divide-y divide-slate-200 text-left text-sm;
+}
+
+.custom-table th {
+  @apply bg-slate-50 px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500;
+}
+
+.custom-table td {
+  @apply px-6 py-4 whitespace-nowrap text-slate-600;
+}
+
+/* Custom scrollbars for clean desktop appearance */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-50;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full transition-colors hover:bg-slate-300;
+}
