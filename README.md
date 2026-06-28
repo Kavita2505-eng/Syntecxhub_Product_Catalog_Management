@@ -1,10 +1,13 @@
-# Syntecxhub Product Catalog Management
+# Syntecxhub Product Catalog Management (Demo Version)
 
-A production-ready, clean, and professional Full-Stack Product Catalog Management system designed for a Web Development Internship. This application showcases industry-standard software architecture, secure authentication, complex search/filter query generation, and real-time MongoDB aggregate analytics, wrapped in a minimalist, Stripe-inspired clean user interface.
+> [!NOTE]
+> **DEMO MODE ACTIVE**: This project runs entirely in **Demo Mode** utilizing an in-memory data layer. No MongoDB installation, Atlas registration, or database connection keys are required! The system is pre-seeded with mockup operator credentials and product records on startup. Note that data modifications will reset when the backend process restarts.
+
+A production-quality, clean, and professional Full-Stack Product Catalog Management system designed for a Web Development Internship. This application showcases industry-standard software architecture, secure authentication, complex search/filter queries, and live dashboard analytics, wrapped in a minimalist, Stripe-inspired clean user interface.
 
 ## Tech Stack
 
-*   **Backend**: Node.js, Express.js, MongoDB Atlas, Mongoose
+*   **Backend**: Node.js, Express.js, In-Memory Data Store
 *   **Frontend**: React, Vite, Tailwind CSS, Lucide React
 *   **Authentication**: JSON Web Token (JWT), Bcrypt.js (for password hashing)
 *   **Documentation**: Swagger UI (OpenAPI 3.0)
@@ -22,8 +25,8 @@ A production-ready, clean, and professional Full-Stack Product Catalog Managemen
 
 ### 📦 Product Inventory Management
 *   **Full CRUD Lifecycle**: Logged-in operators can create new products, update existing specifications, and delete records.
-*   **Automatic SKU Normalization**: All SKUs are automatically capitalized and indexed.
-*   **Database Constraints**: Schema enforces unique SKUs, non-negative pricing, and integer stock counts.
+*   **Automatic SKU Normalization**: All SKUs are automatically capitalized and validated.
+*   **Data Validation**: Enforces unique SKUs, non-negative pricing, and integer stock counts.
 
 ### 🔍 Advanced Query Builder (Search, Filter, Sort, Paginate)
 *   **Global Text Search**: Searches matching name, SKU, or description dynamically (debounced to save bandwidth).
@@ -31,13 +34,13 @@ A production-ready, clean, and professional Full-Stack Product Catalog Managemen
 *   **Dynamic Sorting**: Sort tables by Product Name, Price, Stock count, or Creation date.
 *   **Pagination Controls**: Client-defined limits (10, 25, 50 items/page) with full pagination navigators.
 
-### 📊 MongoDB Aggregation Dashboard
+### 📊 In-Memory Aggregation Dashboard
 *   Dynamic stats cards displaying:
     *   **Total Products**
     *   **Unique Categories**
     *   **Total Inventory Asset Value** ($\sum (\text{price} \times \text{stock})$)
     *   **Low Stock Count** (items with stock < 10)
-*   **Category Distribution**: Detailed breakdown showing product counts and inventory values dynamically calculated via a single facet aggregate pipeline.
+*   **Category Distribution**: Detailed breakdown showing product counts and inventory values dynamically calculated via clean JavaScript aggregate filters.
 
 ### ⚡ UX & UI Robustness
 *   **Toast Notifications Context**: Light-weight, custom React toast engine showing success and error operations.
@@ -52,10 +55,10 @@ A production-ready, clean, and professional Full-Stack Product Catalog Managemen
 ```
 Syntecxhub_Product_Catalog_Management/
 ├── backend/
-│   ├── config/             # DB & Swagger setups
+│   ├── config/             # Swagger setups
 │   ├── controllers/        # Route controllers (Auth, Products)
 │   ├── middleware/         # Auth verification, Central error handler
-│   ├── models/             # Mongoose schemas (User, Product)
+│   ├── models/             # In-memory arrays & models (User, Product, store)
 │   ├── routes/             # Router mappings with OpenAPI specs
 │   ├── validators/         # Input checkers using express-validator
 │   ├── .env.example
@@ -82,7 +85,6 @@ Syntecxhub_Product_Catalog_Management/
 
 ### Prerequisites
 *   Node.js (v16+)
-*   MongoDB Instance (Atlas URI or Local Mongoose Server)
 
 ### Backend Configuration
 1.  Navigate into the backend directory:
@@ -97,12 +99,8 @@ Syntecxhub_Product_Catalog_Management/
     ```bash
     cp .env.example .env
     ```
-4.  Update your environment keys:
-    *   `PORT`: Server listener port (default 5000)
-    *   `MONGODB_URI`: Connect string to MongoDB Atlas
-    *   `JWT_SECRET`: Minimum 32 characters key
-    *   `CORS_ORIGIN`: Front-end origin URL (`http://localhost:5173`)
-5.  Start the developer backend server:
+    *(Note: MONGODB_URI is not used or required in this Demo Version).*
+4.  Start the developer backend server:
     ```bash
     npm run dev
     ```
@@ -129,20 +127,10 @@ Syntecxhub_Product_Catalog_Management/
 Once the backend server is running, you can inspect the interactive swagger page at:
 👉 **`http://localhost:5000/api-docs`**
 
-### Summary Endpoints
-
-#### Authentication (`/api/auth`)
-*   `POST /register` - Register a new user account.
-*   `POST /login` - Authenticate email/username and get JWT token.
-*   `GET /me` - Get profile details of the currently authorized user (Requires token).
-
-#### Product Catalog (`/api/products`)
-*   `GET /` - Retrieve paginated list of products matching search, filter, and sorting queries.
-*   `GET /stats` - Generate aggregation statistics for dashboard cards.
-*   `GET /:id` - Fetch details for a single product record.
-*   `POST /` - Add a new product (Requires token & validator check).
-*   `PUT /:id` - Modify parameters for an existing product (Requires token & validator check).
-*   `DELETE /:id` - Remove a product record from database (Requires token).
+### Pre-Seeded Default Operator Credentials
+For immediate testing on Swagger or the Login screen, you can use:
+*   **Email**: `operator@syntecxhub.com`
+*   **Password**: `securePassword123`
 
 ---
 
@@ -161,17 +149,10 @@ Import it directly into your Postman client. It contains templates for all Auth 
 2.  Connect your GitHub repository.
 3.  Set **Build Command** to: `cd backend && npm install`
 4.  Set **Start Command** to: `cd backend && npm start`
-5.  Add the environment keys (`MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGIN`, etc.) in the **Environment** settings.
+5.  Add the environment keys (`JWT_SECRET`, `CORS_ORIGIN`, etc.) in the **Environment** settings.
 
 ### Frontend (Vercel)
 1.  Deploy a project on [Vercel](https://vercel.com/).
 2.  Set **Root Directory** to: `frontend`
 3.  Vercel will auto-detect Vite settings. Set **Build Command** to `npm run build` and **Output Directory** to `dist`.
 4.  Add the environment variable `VITE_API_URL` pointing to your deployed Render backend url (e.g. `https://your-service.onrender.com/api`).
-
----
-
-## Future Improvements
-*   **Roles & Permissions**: Introduce manager/admin roles where only certain operators can write changes.
-*   **Audit Logging**: Maintain history tables tracking which user changed which field on each product.
-*   **Bulk CSV Upload**: Enable batch creation of product records from Excel/CSV uploads.
