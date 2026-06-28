@@ -1,63 +1,53 @@
-# Syntecxhub Product Catalog Management (Demo Version)
+# Syntecxhub Product Catalog Management
 
-> [!NOTE]
-> **DEMO MODE ACTIVE**: This project runs entirely in **Demo Mode** utilizing an in-memory data layer. No MongoDB installation, Atlas registration, or database connection keys are required! The system is pre-seeded with mockup operator credentials and product records on startup. Note that data modifications will reset when the backend process restarts.
+[![Demo Status](https://img.shields.io/badge/Demo%20Mode-Active%20(In--Memory)-brightgreen?style=flat-square)](https://github.com/)
+[![React Version](https://img.shields.io/badge/React-19.x-blue?style=flat-square&logo=react)](https://react.dev/)
+[![Vite Version](https://img.shields.io/badge/Vite-8.x-purple?style=flat-square&logo=vite)](https://vite.dev/)
+[![Node Version](https://img.shields.io/badge/Node.js-24.x-green?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![Tailwind Version](https://img.shields.io/badge/Tailwind%20CSS-4.x-blueviolet?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-ISC-yellow?style=flat-square)](https://opensource.org/licenses/ISC)
 
-A production-quality, clean, and professional Full-Stack Product Catalog Management system designed for a Web Development Internship. This application showcases industry-standard software architecture, secure authentication, complex search/filter queries, and live dashboard analytics, wrapped in a minimalist, Stripe-inspired clean user interface.
+A production-quality, clean, and highly maintainable Full-Stack Product Catalog Management system designed for a Web Development Internship. This project is built following strict industry folder structures and features robust security controls, dynamic search, multi-faceted filtering, sorting, pagination, and a master dashboard built on in-memory JS query adapters.
 
-## Tech Stack
-
-*   **Backend**: Node.js, Express.js, In-Memory Data Store
-*   **Frontend**: React, Vite, Tailwind CSS, Lucide React
-*   **Authentication**: JSON Web Token (JWT), Bcrypt.js (for password hashing)
-*   **Documentation**: Swagger UI (OpenAPI 3.0)
-*   **Security**: Helmet, CORS, Express Rate Limiter, express-validator
-
----
-
-## Features
-
-### 🔐 Authentication & Session Security
-*   **Registration & Login**: Secure account registration and email/username authentication.
-*   **JWT Protection**: Private routes on the backend require a bearer token in the headers.
-*   **Bcrypt Hashing**: Safe, encrypted storage of passwords with round 10 salts.
-*   **Security Middlewares**: Helmet headers, custom CORS configuration, and request rate-limiting to prevent brute force.
-
-### 📦 Product Inventory Management
-*   **Full CRUD Lifecycle**: Logged-in operators can create new products, update existing specifications, and delete records.
-*   **Automatic SKU Normalization**: All SKUs are automatically capitalized and validated.
-*   **Data Validation**: Enforces unique SKUs, non-negative pricing, and integer stock counts.
-
-### 🔍 Advanced Query Builder (Search, Filter, Sort, Paginate)
-*   **Global Text Search**: Searches matching name, SKU, or description dynamically (debounced to save bandwidth).
-*   **Multi-select Filters**: Filter by categories, price range thresholds (Min/Max), and availability stock statuses (In Stock, Low Stock < 10, Out of Stock).
-*   **Dynamic Sorting**: Sort tables by Product Name, Price, Stock count, or Creation date.
-*   **Pagination Controls**: Client-defined limits (10, 25, 50 items/page) with full pagination navigators.
-
-### 📊 In-Memory Aggregation Dashboard
-*   Dynamic stats cards displaying:
-    *   **Total Products**
-    *   **Unique Categories**
-    *   **Total Inventory Asset Value** ($\sum (\text{price} \times \text{stock})$)
-    *   **Low Stock Count** (items with stock < 10)
-*   **Category Distribution**: Detailed breakdown showing product counts and inventory values dynamically calculated via clean JavaScript aggregate filters.
-
-### ⚡ UX & UI Robustness
-*   **Toast Notifications Context**: Light-weight, custom React toast engine showing success and error operations.
-*   **Loading Skeletons**: Tailored loaders for tables, cards, and details views.
-*   **Error Boundary**: Safe catching of front-end crashes.
-*   **Empty States**: Illustrated helpers when queries return zero results.
+> [!IMPORTANT]
+> **DEMO VERSION HIGHLIGHTS**: 
+> * **Zero Configuration**: This project runs entirely in **Demo Mode** using a high-performance in-memory JavaScript data store. No MongoDB Atlas configuration, installation, or environment setup is required!
+> * **Master Login Bypass**: Enter **any** email/username and password in the login window to authenticate instantly.
+> * **Auto-Registration**: If you type credentials that aren't registered yet, the system dynamically signs you up and generates a valid JWT token on the fly.
+> * **Pre-Seeded Catalog**: Includes pre-populated seed data representing hardware parts and accessories on boot to demonstrate aggregates and inventory health immediately.
 
 ---
 
-## Folder Structure
+## 🛠️ Technology Stack
+
+| Layer | Technology | Badge |
+|---|---|---|
+| **Frontend** | React (v19) | `React.js` `Vite` |
+| **Styling** | Tailwind CSS (v4) | `Tailwind` `Inter Font` |
+| **Icons** | Lucide React | `Lucide Icons` |
+| **Backend** | Node.js + Express.js | `Express` `Node` |
+| **Authentication** | JSON Web Tokens | `JWT` `Bcrypt.js` |
+| **API Docs** | Swagger UI (OpenAPI 3.0) | `OpenAPI` `Swagger` |
+
+---
+
+## 🚀 Key Features
+
+*   **🔒 Session Security**: Full password encryption (Bcrypt.js), protected private layouts, and security headers (Helmet, CORS, IP rate-limiting).
+*   **🔍 Search & Filters**: Debounced search checking SKU, title, and description, category sorting, price threshold bounds, and stock states.
+*   **📊 Aggregate Metrics**: Dashboard cards tracking asset values, average prices, low stock products, and category-wise product distribution.
+*   **📂 UI Skeletons & Boundaries**: Loading states for tables/details sheets, custom toast alerts, and a global React error boundary to handle runtime exceptions.
+
+---
+
+## 📁 Folder Structure
 
 ```
 Syntecxhub_Product_Catalog_Management/
 ├── backend/
-│   ├── config/             # Swagger setups
-│   ├── controllers/        # Route controllers (Auth, Products)
-│   ├── middleware/         # Auth verification, Central error handler
+│   ├── config/             # Swagger UI OpenAPI setup
+│   ├── controllers/        # Express controllers (Auth, Products)
+│   ├── middleware/         # JWT verification, centralized error handler
 │   ├── models/             # In-memory arrays & models (User, Product, store)
 │   ├── routes/             # Router mappings with OpenAPI specs
 │   ├── validators/         # Input checkers using express-validator
@@ -67,11 +57,11 @@ Syntecxhub_Product_Catalog_Management/
 │   ├── src/
 │   │   ├── components/     # Layouts, Skeletons, Error boundary, Custom Toasts
 │   │   ├── context/        # Auth & Toast notification providers
-│   │   ├── hooks/          # useDebounce, etc.
+│   │   ├── hooks/          # useDebounce hook
 │   │   ├── pages/          # Login, Register, Dashboard, Products, Forms, 404
-│   │   ├── services/       # Unified Fetch API wrapper
-│   │   ├── App.jsx         # Router switch setup
-│   │   ├── index.css       # Custom scrolls and table resets
+│   │   ├── services/       # Fetch API client wrapper
+│   │   ├── App.jsx         # Router setup
+│   │   ├── index.css       # Tailwind v4 theme configurations
 │   │   └── main.jsx
 │   ├── tailwind.config.js
 │   └── vite.config.js
@@ -81,78 +71,62 @@ Syntecxhub_Product_Catalog_Management/
 
 ---
 
-## Installation & Setup
+## ⚙️ Quick Installation
 
-### Prerequisites
-*   Node.js (v16+)
+### Backend Setup
+1. Navigate into the backend folder:
+   ```bash
+   cd backend
+   ```
+2. Install the lightweight packages:
+   ```bash
+   npm install
+   ```
+3. Copy environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+4. Start the backend:
+   ```bash
+   npm run dev
+   ```
+   *The server will start up on `http://localhost:5000`*.
 
-### Backend Configuration
-1.  Navigate into the backend directory:
-    ```bash
-    cd backend
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Configure variables. Copy `.env.example` into a new file named `.env`:
-    ```bash
-    cp .env.example .env
-    ```
-    *(Note: MONGODB_URI is not used or required in this Demo Version).*
-4.  Start the developer backend server:
-    ```bash
-    npm run dev
-    ```
-
-### Frontend Configuration
-1.  Navigate to the frontend folder:
-    ```bash
-    cd ../frontend
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Start the Vite bundler server:
-    ```bash
-    npm run dev
-    ```
-4.  Open the address in your browser: `http://localhost:5173`
+### Frontend Setup
+1. Navigate to the frontend directory:
+   ```bash
+   cd ../frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the bundler:
+   ```bash
+   npm run dev
+   ```
+   *Vite will launch on `http://localhost:5173/`*.
 
 ---
 
-## API Documentation (Swagger OpenAPI 3.0)
+## 📖 API Documentation & Testing
 
-Once the backend server is running, you can inspect the interactive swagger page at:
+### Swagger Documentation
+Verify and test endpoints interactively by visiting:
 👉 **`http://localhost:5000/api-docs`**
 
-### Pre-Seeded Default Operator Credentials
-For immediate testing on Swagger or the Login screen, you can use:
+### Pre-Seeded Default Operator (Optional)
+If you want to use the default seeded user:
 *   **Email**: `operator@syntecxhub.com`
 *   **Password**: `securePassword123`
+*(Otherwise, type any credentials you prefer to register/login instantly).*
+
+### Postman Collections
+A fully configured collection is included at the root: [postman_collection.json](./postman_collection.json). It features JavaScript token capture scripts to automate collection variable bindings.
 
 ---
 
-## API Testing (Postman)
+## ☁️ Deployment Guide
 
-A preconfigured Postman collection is supplied at the root folder: [postman_collection.json](./postman_collection.json).
-Import it directly into your Postman client. It contains templates for all Auth and Product actions.
-> **Tip**: The login and register requests automatically save the returned JWT token to a Postman collection variable, meaning subsequent protected requests will run immediately without copy-pasting headers!
-
----
-
-## Deployment Guide
-
-### Backend (Render)
-1.  Create a web service on [Render](https://render.com/).
-2.  Connect your GitHub repository.
-3.  Set **Build Command** to: `cd backend && npm install`
-4.  Set **Start Command** to: `cd backend && npm start`
-5.  Add the environment keys (`JWT_SECRET`, `CORS_ORIGIN`, etc.) in the **Environment** settings.
-
-### Frontend (Vercel)
-1.  Deploy a project on [Vercel](https://vercel.com/).
-2.  Set **Root Directory** to: `frontend`
-3.  Vercel will auto-detect Vite settings. Set **Build Command** to `npm run build` and **Output Directory** to `dist`.
-4.  Add the environment variable `VITE_API_URL` pointing to your deployed Render backend url (e.g. `https://your-service.onrender.com/api`).
+*   **Render (Backend)**: Add a Web Service pointing to `backend/`. Use `cd backend && npm install` as the build command and `cd backend && npm start` as the start command. Add the required `JWT_SECRET` keys in settings.
+*   **Vercel (Frontend)**: Deploy pointing to the `frontend/` directory with build command `npm run build` and output directory `dist`. Link the `VITE_API_URL` pointing to your Render server URL.
