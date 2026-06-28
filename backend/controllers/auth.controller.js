@@ -71,26 +71,21 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Support logging in via email or username
-    const user = await User.findOne({
+    let user = await User.findOne({
       $or: [
         { email: email.toLowerCase() },
         { username: email }
       ]
     });
 
+    // In Demo Mode: if the account does not exist, register them on-the-fly dynamically!
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: 'Invalid credentials',
-      });
-    }
-
-    // Verify password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        error: 'Invalid credentials',
+      const defaultUsername = email.includes('@') ? email.split('@')[0] : email;
+      const finalEmail = email.includes('@') ? email.toLowerCase() : `${email}@demo.com`;
+      user = await User.create({
+        username: defaultUsername,
+        email: finalEmail,
+        password: password
       });
     }
 
@@ -99,7 +94,7 @@ exports.login = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: 'Login successful (Demo Mode)',
       token,
       user: {
         id: user._id,
