@@ -130,3 +130,26 @@ A fully configured collection is included at the root: [postman_collection.json]
 
 *   **Render (Backend)**: Add a Web Service pointing to `backend/`. Use `cd backend && npm install` as the build command and `cd backend && npm start` as the start command. Add the required `JWT_SECRET` keys in settings.
 *   **Vercel (Frontend)**: Deploy pointing to the `frontend/` directory with build command `npm run build` and output directory `dist`. Link the `VITE_API_URL` pointing to your Render server URL.
+
+---
+
+## 👨‍💻 Author
+
+**Kavita Kumari**
+- LinkedIn:- https://www.linkedin.com/in/kavita-singh-b5b97a367/
+- GitHub: https://github.com/Kavita2505-eng
+- Project Repository: https://github.com/Kavita2505-eng/Syntecxhub_Product_Catalog_Management
+
+---
+
+## 🙏 Acknowledgements
+
+This project was developed as part of the **Syntecxhub Web Development Internship Program**.
+
+It demonstrates the implementation of a Product Catalog Management System based on the internship requirements, including RESTful API development, search functionality, pagination, secure endpoints, and input validation.
+
+---
+
+## 📄 License
+
+This project is created for educational and internship purposes.
