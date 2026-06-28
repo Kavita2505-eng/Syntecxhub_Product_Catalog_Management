@@ -8,14 +8,10 @@ const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config();
 
-const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth.routes');
 const productRoutes = require('./routes/product.routes');
 const errorHandler = require('./middleware/error.middleware');
 const swaggerSpecs = require('./config/swagger');
-
-// Initialize database connection
-connectDB();
 
 const app = express();
 
